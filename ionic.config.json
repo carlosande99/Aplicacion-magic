@@ -1,0 +1,7 @@
+{
+  "name": "mtg-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
