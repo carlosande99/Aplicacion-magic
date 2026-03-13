@@ -1,0 +1,12 @@
+@if(showMenu){
+    <label for="numPlayersSelect" class="form-label">Selecciona número de jugadores</label>
+    <select id="numPlayersSelect" class="form-select" [(ngModel)]="numPlayers">
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+    </select>
+
+  <button class="btn btn-primary mt-3" (click)="menu(numPlayers)">Comenzar</button>
+}

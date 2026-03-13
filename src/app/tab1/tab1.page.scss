@@ -1,0 +1,83 @@
+:host{
+    height: 100%;
+}
+.tablero{
+    height: 100%;
+}
+.carta{
+    min-width: 33.33%;
+    max-height: 100%;
+    height: auto;
+    border: 2px solid black;
+}
+.cabecera{
+    height: 25%;
+}
+.cuerpo{
+    height: 75%;
+}
+
+.laterales{
+    height: 30%;
+}
+
+.icon{
+    width: 90%;
+    height: 90%;
+}
+
+.boton_opciones{
+    max-width: 40px;
+    max-height: 40px;
+    height: auto;
+    width: auto;
+}
+
+.texto{
+    font-size: 0.48rem;
+    margin-bottom: 1px;
+}
+
+.vr{
+    color: black;
+}
+
+.separadorHorizontal{
+    color: black;
+    height: 2px;
+    margin: 0;
+    border-style: solid;
+}
+
+.life-container {
+  position: relative; /* IMPORTANTE */
+  overflow: hidden;
+}
+
+.life-overlay {
+  position: absolute;
+  bottom: 0;   /* 👈 antes era top: 0 */
+  left: 0;    /* puedes cambiarlo a left: 0 o center si quieres */
+  display: flex;
+  padding: 4px;
+  z-index: 10;
+  pointer-events: none; /* no bloquea los botones + y - */
+}
+
+.contador-cuadrado {
+  width: 1.5rem;
+  height: 2.5rem;
+  aspect-ratio: 1 / 1;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+}
+

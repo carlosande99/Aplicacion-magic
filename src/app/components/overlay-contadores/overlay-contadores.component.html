@@ -1,0 +1,16 @@
+@if (visible) {
+    <div class="overlay">
+        <div class="w-100 cerrar">
+            <button class="btn btn-danger"  (click)="cerrarOverlay()">X</button>
+        </div>
+        <div class="contador-box">
+            <app-contadores-general 
+                [jugador]="jugador"
+                [contadores]="contadores"
+                (consola)="mostrarConsola()"
+                (morir)="muerte()"
+            >
+            </app-contadores-general>
+        </div>
+    </div>
+}

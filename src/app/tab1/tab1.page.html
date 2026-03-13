@@ -1,17 +1,141 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="m-0" [scrollY]="false">
+  <app-player-select
+    [showMenu]="this.showMenu"
+    [numPlayers]="this.numPlayers"
+    (menuEleccion)="menuEleccion($event)"
+  >
+  </app-player-select>
+  @if(showPlay){
+    <div class="text-bg-secondary d-flex flex-wrap justify-content-around tablero">
+      <div *ngFor="let player of game.players; let i = index" class="d-flex flex-fill carta position-relative">
+        <!-- contadores -->
+        <app-overlay-contadores
+          [visible]="player.overlayVisibleContadores"
+          [contadores]="player.contadores"
+          (cerrar)="overlayContadoresCerrar(i)"
+          (consola)="consola(i)"
+          [jugador]="player"
+          (morir)="muerte(i)"
+        >
+        </app-overlay-contadores>
+        <!-- impuestos comandante -->
+        <app-overlay-impuesto
+          [visible]="player.overlayVisibleImpuesto"
+          (cerrar)="overlayImpuestoCerrar(i)"
+          (valorPrincipal)="player.impuesto[0]"
+          [valorSecundario]="player.impuesto[1]"
+          (guardarPrincipal)="player.impuesto[0] = $event;"
+          (guardarSecundario)="player.impuesto[1] = $event;"
+          [camaradaValor]="player.camarada"
+          (camarada)="player.camarada = $event"
+          (nombre)="player.name"
+          (consola)="consola(i)"
+        >  
+        </app-overlay-impuesto>
+        <!-- daño comandante -->
+        <app-dano-comandante
+          [visible]="player.overlayVisibleComandante"
+          (cerrar)="overlayVisibleComandanteCerrar(i)"
+          [jugadorKey]="player.key"
+          [jugadores]="game.players"
+          (nombre)="player.name"
+          (consola)="consola(i)"
+        >
+        </app-dano-comandante>
+        <!-- mas contadores -->
+        <app-mas-contadores
+          [visible]="player.overlayVisibleMasContadores"
+          (cerrar)="overlayVisibleMasContadoresCerrar(i)"
+          [jugadorKey]="player.key"
+        >
+        </app-mas-contadores>
+        <div class="w-100">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+          <!-- cabecera -->
+          <div class="d-flex justify-content-between cabecera">
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+            <!-- impuesto del comandante -->
+            <div class="border border-black m-1 d-flex justify-content-center align-items-center">
+              <button class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayImpuestoAbrir(player.key)">
+                <img src="assets/icon/impuesto_comander.svg" alt="impuesto comandante" class="icon" *ngIf="(player.impuesto[0] === 0 && player.impuesto[1] === 0) || (player.impuesto[0] === 0 && player.camarada === false)">
+                <!-- SIN CAMARADA -->
+                <div *ngIf="player.impuesto[0] > 0 && player.camarada === false" class="w-100 d-flex flex-column h-100">
+                  <span  class="d-flex justify-content-center align-items-center texto">
+                    {{ player.impuesto[0] }}
+                  </span>
+                  <hr class="separadorHorizontal">
+                  <p class="text-center texto">IMPUESTO</p>
+                </div>
+                <!-- CON CAMARADA -->
+                <div class="w-100 d-flex flex-column h-100" *ngIf="(player.impuesto[0] > 0 || player.impuesto[1] > 0) && player.camarada">
+                  <div class="d-flex justify-content-center align-items-center flex-fill h-100">
+                    <span  class="d-flex justify-content-center align-items-center texto me-2">
+                      {{ player.impuesto[0] }}
+                    </span>
+                    <div class="vr"></div>
+                    <span  class="d-flex justify-content-center align-items-center texto ms-2">
+                      {{ player.impuesto[1] }}
+                    </span>
+                  </div>
+                  <hr class="separadorHorizontal">
+                  <p class="text-center texto">IMPUESTO</p>
+                </div>
+              </button>
+            </div>
+
+            <!-- Header con nombre y botón eliminar -->
+            <div class="card-header d-flex justify-content-center align-items-center border border-dark flex-fill m-1">
+              <h4 class="text-center m-0">{{ player.name }}</h4>
+              <!-- <button fill="clear" color="danger" size="small" (click)="game.removePlayer(i)">❌</button> -->
+            </div>
+
+            <!-- contadores -->
+            <div class="border border-dark m-1 d-flex justify-content-center align-items-center">
+                <button color="danger" class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayContadoresAbrir(player.key)">
+                  <img src="assets/icon/contadores.svg" alt="contadores" class="icon">
+                </button>
+            </div>
+            
+          </div>
+          
+          <!-- cuerpo -->
+          <div class="d-flex justify-content-between cuerpo">
+
+            <!-- daño comandante -->
+            <div class="border border-dark m-1 d-flex justify-content-center align-items-center laterales">
+              <button color="danger" class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayVisibleComandanteAbrir(player.key)">
+                <img src="assets/icon/daño_comandante.svg" alt="daño comandante" class="icon">
+              </button>
+              <!-- {{ player.danoComandante }} -->
+            </div>
+
+            <!-- vidas -->
+            <div class="btn-group d-flex align-items-center justify-content-center border border-black flex-fill m-1 life-container" role="group">
+              <button color="warning" (click)="game.changeLife(i, -1)" class="p-0 border-0 bg-transparent me-1 fs-1 flex-fill text-end h-100">-</button>
+              <h1 class="align-self-center m-0"> {{ player.life }}</h1>
+              <button color="success" (click)="game.changeLife(i, 1)" class="p-0 border-0 bg-transparent ms-1 fs-3 flex-fill text-start h-100">+</button>
+              <div class="life-overlay">
+                @if (tieneDanoComandante(player)) {
+                  @for (entry of getDanoEntries(player); track entry[0]) {
+                    <div class="contador-cuadrado">
+                      {{ entry[1].c1 }} <hr class="separadorHorizontal"> {{ entry[1].c2 }}
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+
+            <!-- mas opciones -->
+            <div class="border border-dark m-1 d-flex justify-content-center align-items-center laterales">        
+              <button color="danger" class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayVisibleMasContadoresAbrir(player.key)">
+                <img src="assets/icon/acciones.svg" alt="mas opciones" class="icon">
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
 </ion-content>

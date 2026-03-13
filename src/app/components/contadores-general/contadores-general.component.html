@@ -1,0 +1,60 @@
+@if(jugador){
+    <div class="d-flex align-items-center justify-content-center mt-1 flex-column w-100">
+        <div class="d-flex w-100 justify-content-around">
+            @for (contador of jugador.contadores; track contador.nombre) {
+                @if (contador.tipo === 1) {
+                    @if(contador.valor){
+                        <button class="d-flex border border-white rounded align-items-center justify-content-center contadorPulsador" (click)="decrementar(contador)">
+                            <div class="d-flex align-items-center justify-content-center flex-column">
+                                <div class="divImage">
+                                    <img [src]="contador.icono" [alt]="contador.nombre" class="icon">
+                                </div>
+                                <div class="divTitulo flex-fill m-1">
+                                    <h4 class="text-white m-0">{{contador.nombre}}</h4>
+                                </div>
+                            </div>
+                        </button>
+                    }@else{
+                        <button class="d-flex border border-white rounded align-items-center justify-content-center" (click)="decrementar(contador)">
+                            <div class="d-flex align-items-center justify-content-center flex-column">
+                                <div class="divImage">
+                                    <img [src]="contador.icono" [alt]="contador.nombre" class="icon">
+                                </div>
+                                <div class="divTitulo flex-fill m-1">
+                                    <h4 class="text-white m-0">{{contador.nombre}}</h4>
+                                </div>
+                            </div>
+                        </button>
+                    }
+                }
+            }
+        </div>
+        <div class="w-100 container mt-3">
+            @for (contador of jugador.contadores; track contador.nombre) {
+                @if (contador.tipo === 0) {
+                    <div class="contadores d-flex align-items-center justify-content-center m-1">
+                        <div class="d-flex flex-column align-items-center justify-content-center contenedor-icono">
+                            <div class="divImage">
+                                <img [src]="contador.icono" [alt]="contador.nombre" class="icon">
+                            </div>
+                            <div class="divTitulo flex-fill">
+                                <h4 class="text-white m-0">{{contador.nombre}}</h4>
+                            </div>
+                        </div>
+                        <div class="d-flex border border-white rounded align-items-center justify-content-center flex-fill">
+                            <button class="flex-fill text-end bg-transparent me-2" (click)="decrementar(contador)">
+                                <span class="simbolos">-</span>
+                            </button>
+                            <h4 class="text-white m-0 simbolos">
+                                {{contador.valor}}
+                            </h4>
+                            <button class="flex-fill text-start bg-transparent ms-2" (click)="incrementar(contador)">
+                                <span class="simbolos">+</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}

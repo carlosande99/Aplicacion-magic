@@ -1,0 +1,53 @@
+.overlay {
+  // position: absolute;
+  // width: 100%;
+  // height: 100%;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 99999;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.cerrar{
+  display: flex;
+  position: absolute;
+}
+
+.icon{
+  filter: invert(1);
+  width: 20px;
+  height: 20px;
+}
+
+.container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.contadores{
+  width: 48%;
+  box-sizing: border-box;
+} 
+
+.contenedor-icono{
+  width: 25%;
+}
+
+h4{
+  font-size: smaller;
+}
+
+.simbolos{
+  // font-size: x-large;
+  font-size: smaller;
+
+}

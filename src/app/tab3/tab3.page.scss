@@ -1,0 +1,73 @@
+form{
+    position: relative;
+}
+.borrar{
+    position: absolute;
+    background: none;
+    color: red;
+    width: 2rem;
+    left: 85%;
+}
+
+.borrar>span{
+    font-size: large;
+}
+
+.cargando{
+    height: 50vh;
+}
+
+.spinner-border{
+    width: 4rem;
+    height: 4rem;
+}
+
+.imagenCarta{
+    width: 90%;
+}
+
+.cartas{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    justify-items: center;
+}
+
+.boton-cartas{
+    background: none;
+    position: relative;
+    justify-items: center;
+}
+
+.iconSets{
+    width: 5%;
+    filter: invert(1);
+}
+
+.boton-sets{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    text-align: start;
+}
+
+.botonGirar{
+    position: absolute;
+    border-radius: 100%;
+    border: 2px solid black;
+    top: 26%;
+    left: 69%;
+    opacity: 0.60;
+    z-index: 1000;
+    background: white;
+    height: 40px;
+    width: 40px;
+    padding: 5px;
+}
+
+.botonGirar:hover{
+    opacity: 1;
+}
+
+.botonGirar.segunda-cara {
+  filter: invert(1);
+}
