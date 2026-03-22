@@ -1,0 +1,16 @@
+ion-card-header {
+  display: flex;
+  flex-direction: column;
+}
+
+ion-card-title {
+  order: 1;
+}
+
+ion-card-subtitle {
+  order: 2;
+}
+
+ion-card-content{
+    white-space: pre-line;
+}

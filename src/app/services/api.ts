@@ -64,4 +64,20 @@ export class Api {
       return [];
     }
   }
+
+  async buscarImagenesExtras(nombre: string): Promise<any[]>{
+    let url = nombre;
+    let cartasImages: any[] = [];
+    try{
+      while (url) {
+        const resp: any = await firstValueFrom(this.http.get(url));
+        cartasImages = [...cartasImages, ...resp.data];
+        url = resp.has_more ? resp.next_page : null;
+      }
+
+      return cartasImages;
+    }catch(error){
+      return [];
+    }
+  }
 }

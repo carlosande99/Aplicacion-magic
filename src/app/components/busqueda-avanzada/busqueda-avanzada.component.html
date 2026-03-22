@@ -1,0 +1,40 @@
+<!-- no se representan las cartas dobles -->
+@if (carta) {
+    <ion-content class="ion-padding">
+        <button>
+            <button (click)="closeModal()">X</button>
+        </button>
+        <ion-card>
+            <img [alt]="carta.name" [src]="carta.image_uris.art_crop" />
+            <ion-card-header>
+                <ion-card-title>{{carta?.name}}</ion-card-title>
+                <ion-card-subtitle>{{carta?.type_line}}</ion-card-subtitle>
+            </ion-card-header>
+
+            <!-- <span>{{carta.mana_cost}}</span> -->
+            
+            <!-- <span>{{carta.power}}/{{carta.toughness}}</span> -->
+
+            <ion-card-content>
+                {{carta?.oracle_text}}
+            </ion-card-content>
+        </ion-card>
+        <ion-card>
+            <ion-card-header>
+                <ion-card></ion-card>
+            </ion-card-header>
+        </ion-card>
+        <div>
+            <h6>Ediciones</h6>
+            @for (item of cartasImagenes; track $index) {
+                <ion-img
+                    [src]="item.image_uris.png"
+                >
+                </ion-img>
+            }
+        </div>
+    </ion-content>
+}
+
+
+

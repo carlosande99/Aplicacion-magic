@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonInput, IonImg, IonText } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonImg, IonText, ModalController } from '@ionic/angular/standalone';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Api } from '../services/api';
+import { BusquedaAvanzadaComponent } from '../components/busqueda-avanzada/busqueda-avanzada.component';
 
 @Component({
   selector: 'app-tab3',
@@ -16,8 +17,11 @@ export class Tab3Page {
   espera: boolean = true;
   sincartas: boolean = false;
   visibleFace: number = 0;
+  cartaSeleccionada: any = null;
+  modalAbierto = false;
+  idCarta = "";
 
-  constructor(private fb: FormBuilder, private api:Api) {
+  constructor(private fb: FormBuilder, private api:Api, private modalCtrl: ModalController) {
     this.miFormulario = this.fb.group({
       nombre: ['']
     });
@@ -31,7 +35,7 @@ export class Tab3Page {
     const nombre = this.miFormulario.value.nombre;
 
     this.cartas = await this.api.buscarCartasNombre(nombre);
-
+    console.log(this.cartas)
     if(this.cartas.length <= 0){
       this.espera = true;
       this.sincartas = true;
@@ -44,6 +48,7 @@ export class Tab3Page {
   async ediciones(){
     this.espera = false;
     this.cartas = [];
+    this.sincartas = false;
     this.sets = await this.api.buscarSets();
     this.espera = true;
     console.log(this.sets)
@@ -71,6 +76,17 @@ export class Tab3Page {
     }else{
       this.visibleFace = 0
     }
+  }
+
+  async abrirModal(carta: any) {
+  const modal = await this.modalCtrl.create({
+    component: BusquedaAvanzadaComponent,
+    componentProps: {
+      carta: carta
+    }
+    });
+
+    await modal.present();
   }
 
 }
