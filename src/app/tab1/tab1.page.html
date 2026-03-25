@@ -6,7 +6,7 @@
   >
   </app-player-select>
   @if(showPlay){
-    <div class="text-bg-secondary d-flex flex-wrap justify-content-around tablero">
+    <div class="d-flex flex-wrap justify-content-around tablero">
       <div *ngFor="let player of game.players; let i = index" class="d-flex flex-fill carta position-relative">
         <!-- contadores -->
         <app-overlay-contadores
@@ -55,7 +55,7 @@
           <div class="d-flex justify-content-between cabecera">
 
             <!-- impuesto del comandante -->
-            <div class="border border-black m-1 d-flex justify-content-center align-items-center">
+            <div class="border m-1 d-flex justify-content-center align-items-center">
               <button class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayImpuestoAbrir(player.key)">
                 <img src="assets/icon/impuesto_comander.svg" alt="impuesto comandante" class="icon" *ngIf="(player.impuesto[0] === 0 && player.impuesto[1] === 0) || (player.impuesto[0] === 0 && player.camarada === false)">
                 <!-- SIN CAMARADA -->
@@ -84,14 +84,14 @@
             </div>
 
             <!-- Header con nombre y botón eliminar -->
-            <div class="card-header d-flex justify-content-center align-items-center border border-dark flex-fill m-1">
+            <div class="card-header d-flex justify-content-center align-items-center border flex-fill m-1">
               <h4 class="text-center m-0">{{ player.name }}</h4>
               <!-- <button fill="clear" color="danger" size="small" (click)="game.removePlayer(i)">❌</button> -->
             </div>
 
             <!-- contadores -->
-            <div class="border border-dark m-1 d-flex justify-content-center align-items-center">
-                <button color="danger" class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayContadoresAbrir(player.key)">
+            <div class="border m-1 d-flex justify-content-center align-items-center">
+                <button class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayContadoresAbrir(player.key)">
                   <img src="assets/icon/contadores.svg" alt="contadores" class="icon">
                 </button>
             </div>
@@ -102,18 +102,18 @@
           <div class="d-flex justify-content-between cuerpo">
 
             <!-- daño comandante -->
-            <div class="border border-dark m-1 d-flex justify-content-center align-items-center laterales">
-              <button color="danger" class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayVisibleComandanteAbrir(player.key)">
+            <div class="border m-1 d-flex justify-content-center align-items-center laterales">
+              <button class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayVisibleComandanteAbrir(player.key)">
                 <img src="assets/icon/daño_comandante.svg" alt="daño comandante" class="icon">
               </button>
               <!-- {{ player.danoComandante }} -->
             </div>
 
             <!-- vidas -->
-            <div class="btn-group d-flex align-items-center justify-content-center border border-black flex-fill m-1 life-container" role="group">
-              <button color="warning" (click)="game.changeLife(i, -1)" class="p-0 border-0 bg-transparent me-1 fs-1 flex-fill text-end h-100">-</button>
+            <div class="btn-group d-flex align-items-center justify-content-center border flex-fill m-1 life-container" role="group">
+              <button (click)="game.changeLife(i, -1)" class="p-0 border-0 bg-transparent me-1 fs-1 flex-fill text-end h-100">-</button>
               <h1 class="align-self-center m-0"> {{ player.life }}</h1>
-              <button color="success" (click)="game.changeLife(i, 1)" class="p-0 border-0 bg-transparent ms-1 fs-3 flex-fill text-start h-100">+</button>
+              <button (click)="game.changeLife(i, 1)" class="p-0 border-0 bg-transparent ms-1 fs-3 flex-fill text-start h-100">+</button>
               <div class="life-overlay">
                 @if (tieneDanoComandante(player)) {
                   @for (entry of getDanoEntries(player); track entry[0]) {
@@ -126,8 +126,8 @@
             </div>
 
             <!-- mas opciones -->
-            <div class="border border-dark m-1 d-flex justify-content-center align-items-center laterales">        
-              <button color="danger" class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayVisibleMasContadoresAbrir(player.key)">
+            <div class="border m-1 d-flex justify-content-center align-items-center laterales">        
+              <button class="bg-transparent d-flex justify-content-center align-items-center boton_opciones" (click)="overlayVisibleMasContadoresAbrir(player.key)">
                 <img src="assets/icon/acciones.svg" alt="mas opciones" class="icon">
               </button>
             </div>

@@ -1,0 +1,67 @@
+<!-- no se representan las cartas dobles -->
+@if (carta) {
+    <ion-content class="ion-padding">
+        <button>
+            <button (click)="closeModal()">X</button>
+        </button>
+        <ion-card>
+            @if(carta.image_uris){
+            <img [alt]="carta.name" [src]="carta.image_uris.art_crop" />
+            <ion-card-header>
+                <ion-card-title>{{carta?.name}}</ion-card-title>
+                <ion-card-subtitle>{{carta?.type_line}}</ion-card-subtitle>
+            </ion-card-header>
+            
+            <ion-card-content>
+                {{carta?.oracle_text}}
+            </ion-card-content>
+            } @else {
+                <img [alt]="carta.card_faces[0].name" [src]="carta.card_faces[0].image_uris.art_crop" />
+                <ion-card-header>
+                    <ion-card-title>{{carta?.card_faces[0].name}}</ion-card-title>
+                    <ion-card-subtitle>{{carta?.card_faces[0].type_line}}</ion-card-subtitle>
+                </ion-card-header>
+                
+                <ion-card-content>
+                    {{carta?.card_faces[0].oracle_text}}
+                </ion-card-content>
+            }
+        </ion-card>
+        @for (grupo of cartasImagenes; track $index) {
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-title>{{grupo.set_name}}({{grupo.cartas[0].set}})</ion-card-title>
+                </ion-card-header>
+
+                <ion-card-content>
+                    <ion-list>
+                        @for (item of grupo.cartas; track $index) {
+                            @if(item.image_uris?.png){
+                                <ion-item>
+                                    <ion-thumbnail slot="start" lines="none">
+                                        <ion-img [src]="item.image_uris.png"></ion-img>
+                                    </ion-thumbnail>
+                                    <ion-label>
+                                        {{getPrecio(item)}}
+                                    </ion-label>
+                                </ion-item>
+                            } @else {
+                                <ion-item>
+                                    <ion-thumbnail slot="start" lines="none">
+                                        <ion-img [src]="item.card_faces[0].image_uris.png"></ion-img>
+                                    </ion-thumbnail>
+                                    <ion-label>
+                                        {{getPrecio(item)}}
+                                    </ion-label>
+                                </ion-item>
+                            }
+                        }
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+        }
+    </ion-content>
+}
+
+
+

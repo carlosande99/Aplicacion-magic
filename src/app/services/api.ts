@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +37,7 @@ export class Api {
       }
 
       sets = sets.filter(set => 
-        ['expansion', 'core', 'masters'].includes(set.set_type) &&
+        ['expansion', 'core', 'masters', 'commander', 'draft_innovation'].includes(set.set_type) &&
         !set.digital && set.card_count > 0
       );
 
@@ -75,7 +75,19 @@ export class Api {
         url = resp.has_more ? resp.next_page : null;
       }
 
-      return cartasImages;
+      const grupos: any = {};
+
+      cartasImages.forEach((item) => {
+        if (!grupos[item.set_name]) {
+          grupos[item.set_name] = [];
+        }
+        grupos[item.set_name].push(item);
+      });
+      return Object.keys(grupos).map(key => ({
+        set_name: key,
+        cartas: grupos[key]
+      }));
+      
     }catch(error){
       return [];
     }

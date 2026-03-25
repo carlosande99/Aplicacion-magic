@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonImg, IonText, ModalController } from '@ionic/angular/standalone';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Api } from '../services/api';
+import { BusquedaAvanzadaModalComponent } from '../components/busqueda-avanzada-modal/busqueda-avanzada-modal.component';
 import { BusquedaAvanzadaComponent } from '../components/busqueda-avanzada/busqueda-avanzada.component';
 
 @Component({
@@ -79,13 +80,20 @@ export class Tab3Page {
   }
 
   async abrirModal(carta: any) {
-  const modal = await this.modalCtrl.create({
-    component: BusquedaAvanzadaComponent,
-    componentProps: {
-      carta: carta
-    }
+    const modal = await this.modalCtrl.create({
+      component: BusquedaAvanzadaModalComponent,
+      componentProps: {
+        carta: carta
+      }
     });
 
+    await modal.present();
+  }
+
+  async abrirModalAvanzadas(){
+    const modal = await this.modalCtrl.create({
+      component: BusquedaAvanzadaComponent,
+    })
     await modal.present();
   }
 

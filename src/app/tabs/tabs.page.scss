@@ -1,20 +1,20 @@
 img{
-    width: 18px;
-    height: 25px;
-    // color:chocolate !important; 
+  width: 18px;
+  height: 25px;
 }
 ion-tab-button{
-    color: white;
+    --color-selected: orange;
 }
 
 ion-tab-button.tab-selected ion-icon {
-  color: orange; /* color cuando está seleccionado */
+  color: orange; 
 }
 
 ion-tab-button:hover ion-icon {
-  color: orange; /* color cuando está seleccionado */
+  color: orange;
 }
 
 ion-tab-button:hover ion-label {
-  color: white; /* color cuando está seleccionado */
+  color: orange;
 }
+
