@@ -2,7 +2,9 @@ package com.example.app;
 
 import android.os.Bundle;
 import android.view.View;
-
+import android.os.Bundle;
+import com.getcapacitor.BridgeActivity;
+import com.google.firebase.FirebaseApp;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -11,6 +13,8 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideSystemUI(); // Llama a la función al iniciar
+
+        FirebaseApp.initializeApp(this);
     }
 
     @Override

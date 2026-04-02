@@ -1,0 +1,18 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>tab4</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">tab4</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-button (click)="tomarFoto()">Escanear carta</ion-button>
+    <ion-card-title>{{ nombreCarta }}</ion-card-title>
+    <img *ngIf="imagen" [src]="imagen" />
+  </ion-content>
+</ion-content>
