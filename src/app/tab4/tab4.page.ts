@@ -1,48 +1,173 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonImg, IonButton, IonCardSubtitle, IonCardTitle } from '@ionic/angular/standalone';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { CameraPreview, CameraPreviewOptions } from '@capacitor-community/camera-preview';
-import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonCardTitle, ModalController } from '@ionic/angular/standalone';
 import { Ocr, TextDetections } from '@capacitor-community/image-to-text';
-import Tesseract from 'tesseract.js';
 import { Api } from '../services/api';
+import { BusquedaAvanzadaModalComponent } from '../components/busqueda-avanzada-modal/busqueda-avanzada-modal.component';
 
 @Component({
   selector: 'app-tab4',
   templateUrl: './tab4.page.html',
   styleUrls: ['./tab4.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonImg, IonButton, IonCardSubtitle, IonCardTitle]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonCardTitle]
 })
 export class Tab4Page {
   imagen: string | undefined;
   nombre: any[] = [];
   nombreCarta: string = '';
-  constructor(private api: Api) { }
+  escaneando = false;
+  procesando = false; // evita solapamientos
+  ultimaLectura = '';
+  carta: any = null;
+  constructor(private api: Api, private modalCtrl: ModalController) { }
+  
+  @ViewChild('video', { static: true }) videoRef!: ElementRef<HTMLVideoElement>;
+  @ViewChild('scanBox', { static: true }) scanBoxRef!: ElementRef<HTMLDivElement>;
 
-  // ionViewDidEnter() {
-  //   this.tomarFoto();
-  // }
+
+  stream: MediaStream | null = null;
+
+  ngOnInit() {
+    this.iniciarCamara();
+  }
+
+  ngAfterViewInit() {
+    this.iniciarEscaneo();
+  }
+
+  iniciarEscaneo() {
+    this.escaneando = true;
+    this.loopEscaneo();
+  }
+
+  detenerEscaneo() {
+    this.escaneando = false;
+  }
 
 
-  async tomarFoto() {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 50,
-        allowEditing: false,
-        resultType: CameraResultType.Base64,
-        source: CameraSource.Camera
-      });
+  async loopEscaneo() {
+    if (!this.escaneando) return;
 
-      // this.imagen = 'data:image/jpeg;base64,' + image.base64String;
-
-      this.escanearCarta(image.base64String || '');
-
-    } catch (e) {
-      console.error('Error en OCR:', e);
+    // evita ejecutar múltiples OCR a la vez
+    if (this.procesando) {
+      setTimeout(() => this.loopEscaneo(), 300);
+      return;
     }
+
+    this.procesando = true;
+
+    try {
+      await this.capturarZonaYEscanear();
+    } catch (e) {
+      console.error(e);
+    }
+
+    this.procesando = false;
+
+    // ⏱️ frecuencia (ajusta aquí)
+    setTimeout(() => this.loopEscaneo(), 1000);
+  }
+
+  // sin usar el boton, solo con la camara
+  async iniciarCamara() {
+    this.stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment' // cámara trasera
+      },
+      audio: false
+    });
+
+    this.videoRef.nativeElement.srcObject = this.stream;
+    await this.videoRef.nativeElement.play();
+  }
+
+  async capturarZonaYEscanear() {
+    const video = this.videoRef.nativeElement;
+    const scanBox = this.scanBoxRef.nativeElement;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+
+    const rect = scanBox.getBoundingClientRect();
+    const videoRect = video.getBoundingClientRect();
+
+    const scaleX = videoWidth / videoRect.width;
+    const scaleY = videoHeight / videoRect.height;
+
+    const sx = (rect.left - videoRect.left) * scaleX;
+    const sy = (rect.top - videoRect.top) * scaleY;
+    const sw = rect.width * scaleX;
+    const sh = rect.height * scaleY;
+
+    canvas.width = sw;
+    canvas.height = sh;
+
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+
+    const base64 = canvas.toDataURL('image/png').split(',')[1];
+
+    await this.escanearCarta(base64);
+  }
+
+  // usando el boton
+  async tomarFoto() {
+    // try {
+    //   const image = await Camera.getPhoto({
+    //     quality: 50,
+    //     allowEditing: false,
+    //     resultType: CameraResultType.Base64,
+    //     source: CameraSource.Camera
+    //   });
+
+    //   this.escanearCarta(image.base64String || '');
+
+    // } catch (e) {
+    //   console.error('Error en OCR:', e);
+    // }
+
+    const video = this.videoRef.nativeElement;
+    const scanBox = this.scanBoxRef.nativeElement;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // 📏 tamaño real del video
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+
+    // 📦 posición del cuadrado en pantalla
+    const rect = scanBox.getBoundingClientRect();
+    const videoRect = video.getBoundingClientRect();
+
+    // 🔁 convertir a escala del video real
+    const scaleX = videoWidth / videoRect.width;
+    const scaleY = videoHeight / videoRect.height;
+
+    const sx = (rect.left - videoRect.left) * scaleX;
+    const sy = (rect.top - videoRect.top) * scaleY;
+    const sw = rect.width * scaleX;
+    const sh = rect.height * scaleY;
+
+    // 📸 ajustar canvas SOLO a esa zona
+    canvas.width = sw;
+    canvas.height = sh;
+
+    ctx.drawImage(
+      video,
+      sx, sy, sw, sh,  // área recortada
+      0, 0, sw, sh
+    );
+
+    const base64 = canvas.toDataURL('image/png').split(',')[1];
+
+    this.escanearCarta(base64);
   }
 
   async escanearCarta(imageBase64: string) {
@@ -50,7 +175,7 @@ export class Tab4Page {
     const base64Recortado = await this.recortarZonaNombre(imageBase64);
 
     // Mostrar imagen recortada en la app
-    this.imagen = 'data:image/png;base64,' + base64Recortado;
+    this.imagen = 'data:image/png;base64,' + imageBase64;
 
     // Detectar texto con ML Kit OCR
     const result: TextDetections = await Ocr.detectText({
@@ -68,6 +193,11 @@ export class Tab4Page {
     // Llamada a tu API para buscar la carta
     this.nombre = await this.api.buscarCartasNombre(this.nombreCarta);
     console.log(this.nombre);
+    if (this.nombreCarta && this.nombreCarta !== 'No se detectó nombre') {
+      this.detenerEscaneo(); // Detener escaneo después de obtener un resultado
+      this.carta = this.nombre[0]; // Tomar la primera carta encontrada
+      this.abrirModal(this.carta); // Abrir modal con la carta encontrada
+    }
   }
 
 
@@ -108,5 +238,16 @@ export class Tab4Page {
       // Importante: usar data URL completo para que funcione en móvil
       img.src = 'data:image/jpeg;base64,' + imageBase64;
     });
+  }
+
+  async abrirModal(carta: any) {
+    const modal = await this.modalCtrl.create({
+      component: BusquedaAvanzadaModalComponent,
+      componentProps: {
+        carta: carta
+      }
+    });
+
+    await modal.present();
   }
 }

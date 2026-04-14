@@ -1,18 +1,31 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>tab4</ion-title>
+    <ion-title>Escáner</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tab4</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <ion-button (click)="tomarFoto()">Escanear carta</ion-button>
-    <ion-card-title>{{ nombreCarta }}</ion-card-title>
-    <img *ngIf="imagen" [src]="imagen" />
-  </ion-content>
+
+  <!-- Cámara -->
+  <div class="camera-container">
+    <video #video autoplay playsinline></video>
+
+    <!-- Overlay -->
+    <div class="overlay">
+      <div #scanBox class="scan-box"></div>
+    </div>
+  </div>
+
+  <!-- Botón opcional -->
+  <ion-button expand="block" (click)="iniciarEscaneo()">
+    Escanear carta
+  </ion-button>
+
+  <!-- Resultado -->
+  <ion-card-title>{{ nombreCarta }}</ion-card-title>
+
+  <!-- Imagen recortada -->
+  <img *ngIf="imagen" [src]="imagen" />
+
 </ion-content>
+

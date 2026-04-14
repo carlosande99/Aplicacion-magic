@@ -1,0 +1,28 @@
+.camera-container {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  background: black;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scan-box {
+  width: 70%;
+  height: 80%;
+  border: 3px solid #00ffcc;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #00ffcc;
+}
