@@ -9,8 +9,12 @@
     </select>
 
   <button class="btn btn-primary mt-3" (click)="menu(numPlayers)">Comenzar</button>
-  <button>
-    <ion-toggle [(ngModel)]="paletteToggle" (ionChange)="toggleChange($event)" justify="space-between">Dark Mode</ion-toggle>
-  </button>
+  <ion-list [inset]="true">
+    <ion-item>
+      <ion-toggle [(ngModel)]="paletteToggle" (ionChange)="toggleChange($event)" justify="space-between"
+        >Dark Mode</ion-toggle
+      >
+    </ion-item>
+  </ion-list>
   
 }

@@ -46,6 +46,16 @@ export class Tab4Page {
     this.escaneando = false;
   }
 
+  detenerCamara() {
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+      this.stream = null;
+    }
+
+    if (this.videoRef?.nativeElement) {
+      this.videoRef.nativeElement.srcObject = null;
+    }
+  }
 
   async loopEscaneo() {
     if (!this.escaneando) return;
@@ -62,6 +72,8 @@ export class Tab4Page {
       await this.capturarZonaYEscanear();
     } catch (e) {
       console.error(e);
+      this.detenerEscaneo();
+      this.detenerCamara();
     }
 
     this.procesando = false;
@@ -69,105 +81,61 @@ export class Tab4Page {
     // ⏱️ frecuencia (ajusta aquí)
     setTimeout(() => this.loopEscaneo(), 1000);
   }
-
-  // sin usar el boton, solo con la camara
+  
   async iniciarCamara() {
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: 'environment' // cámara trasera
-      },
-      audio: false
-    });
+    try{
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment' // cámara trasera
+        },
+        audio: false
+      });
 
-    this.videoRef.nativeElement.srcObject = this.stream;
-    await this.videoRef.nativeElement.play();
+      this.videoRef.nativeElement.srcObject = this.stream;
+      await this.videoRef.nativeElement.play();
+    }catch(e){
+      console.error('Error accediendo a la cámara:', e);
+      this.detenerCamara();
+      this.detenerEscaneo();
+    }
   }
 
   async capturarZonaYEscanear() {
-    const video = this.videoRef.nativeElement;
-    const scanBox = this.scanBoxRef.nativeElement;
+    try{
+      const video = this.videoRef.nativeElement;
+      const scanBox = this.scanBoxRef.nativeElement;
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
 
-    const rect = scanBox.getBoundingClientRect();
-    const videoRect = video.getBoundingClientRect();
+      const rect = scanBox.getBoundingClientRect();
+      const videoRect = video.getBoundingClientRect();
 
-    const scaleX = videoWidth / videoRect.width;
-    const scaleY = videoHeight / videoRect.height;
+      const scaleX = videoWidth / videoRect.width;
+      const scaleY = videoHeight / videoRect.height;
 
-    const sx = (rect.left - videoRect.left) * scaleX;
-    const sy = (rect.top - videoRect.top) * scaleY;
-    const sw = rect.width * scaleX;
-    const sh = rect.height * scaleY;
+      const sx = (rect.left - videoRect.left) * scaleX;
+      const sy = (rect.top - videoRect.top) * scaleY;
+      const sw = rect.width * scaleX;
+      const sh = rect.height * scaleY;
 
-    canvas.width = sw;
-    canvas.height = sh;
+      canvas.width = sw;
+      canvas.height = sh;
 
-    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
 
-    const base64 = canvas.toDataURL('image/png').split(',')[1];
+      const base64 = canvas.toDataURL('image/png').split(',')[1];
 
-    await this.escanearCarta(base64);
-  }
-
-  // usando el boton
-  async tomarFoto() {
-    // try {
-    //   const image = await Camera.getPhoto({
-    //     quality: 50,
-    //     allowEditing: false,
-    //     resultType: CameraResultType.Base64,
-    //     source: CameraSource.Camera
-    //   });
-
-    //   this.escanearCarta(image.base64String || '');
-
-    // } catch (e) {
-    //   console.error('Error en OCR:', e);
-    // }
-
-    const video = this.videoRef.nativeElement;
-    const scanBox = this.scanBoxRef.nativeElement;
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // 📏 tamaño real del video
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-
-    // 📦 posición del cuadrado en pantalla
-    const rect = scanBox.getBoundingClientRect();
-    const videoRect = video.getBoundingClientRect();
-
-    // 🔁 convertir a escala del video real
-    const scaleX = videoWidth / videoRect.width;
-    const scaleY = videoHeight / videoRect.height;
-
-    const sx = (rect.left - videoRect.left) * scaleX;
-    const sy = (rect.top - videoRect.top) * scaleY;
-    const sw = rect.width * scaleX;
-    const sh = rect.height * scaleY;
-
-    // 📸 ajustar canvas SOLO a esa zona
-    canvas.width = sw;
-    canvas.height = sh;
-
-    ctx.drawImage(
-      video,
-      sx, sy, sw, sh,  // área recortada
-      0, 0, sw, sh
-    );
-
-    const base64 = canvas.toDataURL('image/png').split(',')[1];
-
-    this.escanearCarta(base64);
+      await this.escanearCarta(base64);
+    }catch(e){
+      console.error('Error capturando o escaneando:', e);
+      this.detenerCamara();
+      this.detenerEscaneo();
+    }
   }
 
   async escanearCarta(imageBase64: string) {
@@ -193,6 +161,7 @@ export class Tab4Page {
     // Llamada a tu API para buscar la carta
     this.nombre = await this.api.buscarCartasNombre(this.nombreCarta);
     console.log(this.nombre);
+    
     if (this.nombreCarta && this.nombreCarta !== 'No se detectó nombre') {
       this.detenerEscaneo(); // Detener escaneo después de obtener un resultado
       this.carta = this.nombre[0]; // Tomar la primera carta encontrada

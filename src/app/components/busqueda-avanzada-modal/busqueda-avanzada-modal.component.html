@@ -1,14 +1,19 @@
 <!-- no se representan las cartas dobles -->
 @if (carta) {
     <ion-content class="ion-padding">
-        <button>
-            <button (click)="closeModal()">X</button>
-        </button>
         <ion-card>
+            <ion-button (click)="closeModal()" fill="clear">
+                <ion-icon name="close" src="assets/icon/arrow-left.svg"></ion-icon>
+            </ion-button>
             @if(carta.image_uris){
             <img [alt]="carta.name" [src]="carta.image_uris.art_crop" />
             <ion-card-header>
-                <ion-card-title>{{carta?.name}}</ion-card-title>
+                <ion-card-title>
+                    {{carta?.name}}
+                    @for (simbolo of simbolosMana; track $index) {
+                        <i [class]="'ms ms-' + simbolo + ' ms-cost'"></i>
+                    }
+                </ion-card-title>
                 <ion-card-subtitle>{{carta?.type_line}}</ion-card-subtitle>
             </ion-card-header>
             
@@ -18,7 +23,10 @@
             } @else {
                 <img [alt]="carta.card_faces[0].name" [src]="carta.card_faces[0].image_uris.art_crop" />
                 <ion-card-header>
-                    <ion-card-title>{{carta?.card_faces[0].name}}</ion-card-title>
+                    <ion-card-title>
+                        {{carta?.card_faces[0].name}} 
+                        {{carta?.card_faces[0].mana_cost}}
+                    </ion-card-title>
                     <ion-card-subtitle>{{carta?.card_faces[0].type_line}}</ion-card-subtitle>
                 </ion-card-header>
                 
@@ -30,7 +38,7 @@
         @for (grupo of cartasImagenes; track $index) {
             <ion-card>
                 <ion-card-header>
-                    <ion-card-title>{{grupo.set_name}}({{grupo.cartas[0].set}})</ion-card-title>
+                    <ion-card-title>{{grupo.set_name}} ({{grupo.cartas[0].set}})</ion-card-title>
                 </ion-card-header>
 
                 <ion-card-content>

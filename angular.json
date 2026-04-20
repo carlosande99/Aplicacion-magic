@@ -35,7 +35,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss", "node_modules/bootstrap/dist/css/bootstrap.min.css"],
+            "styles": ["src/global.scss", "src/theme/variables.scss", "node_modules/bootstrap/dist/css/bootstrap.min.css", "https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.css"],
             "scripts": [],
             "browser": "src/main.ts"
           },
