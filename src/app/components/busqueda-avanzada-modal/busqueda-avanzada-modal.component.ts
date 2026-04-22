@@ -3,6 +3,7 @@ import { IonContent, IonImg, IonCard, IonCardHeader, IonCardTitle, IonCardSubtit
 import { AnimationController, ModalController } from '@ionic/angular/standalone';
 import { Api } from 'src/app/services/api';
 import { RouterLinkActive } from "@angular/router";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-busqueda-avanzada-modal',
@@ -14,7 +15,7 @@ export class BusquedaAvanzadaModalComponent{
   @Input() carta: any;
   cartasImagenes: any;
   simbolosMana: any;
-  constructor(private animationCtrl: AnimationController, private modalCtrl: ModalController, private api:Api) { }
+  constructor(private animationCtrl: AnimationController, private modalCtrl: ModalController, private api:Api, private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     this.imagenExt(this.carta.prints_search_uri);
@@ -60,5 +61,22 @@ export class BusquedaAvanzadaModalComponent{
     console.log(this.simbolosMana)
     return this.simbolosMana
   }
+
+  getSimbolosTexto(texto: string): SafeHtml {
+    if (!texto) return '';
+
+    const html = texto.replace(/\{(.*?)\}/g, (_, simbolo) => {
+      const s = simbolo.toLowerCase();
+
+      if (s === 't') {
+        return `<img src="assets/icon/tap.webp" style="width: 1.2em; height: 1.2em;" />`;
+      }
+
+      return `<i class="ms ms-${s} ms-cost" style="margin-left: 0 !important;"></i>`;
+    });
+
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
 }
 

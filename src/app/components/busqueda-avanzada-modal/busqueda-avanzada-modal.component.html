@@ -10,15 +10,23 @@
             <ion-card-header>
                 <ion-card-title>
                     {{carta?.name}}
-                    @for (simbolo of simbolosMana; track $index) {
-                        <i [class]="'ms ms-' + simbolo + ' ms-cost'"></i>
-                    }
+                    <span>
+                        @for (simbolo of simbolosMana; track $index) {
+                            <i [class]="'ms ms-' + simbolo + ' ms-cost'" style="margin-left: 0.1rem;"></i>
+                        }
+                    </span>
                 </ion-card-title>
-                <ion-card-subtitle>{{carta?.type_line}} {{carta?.power}}/{{carta?.toughness}}</ion-card-subtitle>
+                <ion-card-subtitle>
+                    {{carta?.type_line}} 
+                    <span class="poder-resis">
+                        @if(carta.power && carta.toughness){
+                            {{carta?.power}}/{{carta?.toughness}}
+                        }
+                    </span>
+                </ion-card-subtitle>
             </ion-card-header>
             
-            <ion-card-content>
-                {{carta?.oracle_text}}
+            <ion-card-content [innerHTML]="getSimbolosTexto(carta?.oracle_text)">
             </ion-card-content>
             } @else {
                 <img [alt]="carta.card_faces[0].name" [src]="carta.card_faces[0].image_uris.art_crop" />

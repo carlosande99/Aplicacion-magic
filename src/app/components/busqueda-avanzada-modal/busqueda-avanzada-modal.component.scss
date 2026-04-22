@@ -1,19 +1,31 @@
 
 ion-card-header {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  align-items: center;
 }
 
 ion-card-title {
   order: 1;
+  font-size: 1.3em;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: space-between;
 }
 
 ion-card-subtitle {
   order: 2;
+  font-size: 0.9em;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: space-between;
 }
 
 ion-card-content{
   white-space: pre-line;
+  font-size: 1.2em;
+  
 }
 
 ion-item{
@@ -44,6 +56,11 @@ ion-img{
   object-fit: contain;
 }
 
-ion-card-title{
-  font-size: 1.2em;
+span{
+  font-size: 0.8em;
+}
+
+.poder-resis{
+  font-size: 1.3em;
+  color: var(--ion-text-color);
 }
