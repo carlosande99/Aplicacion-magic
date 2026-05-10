@@ -19,7 +19,13 @@ export class BusquedaAvanzadaModalComponent{
 
   ngOnInit() {
     this.imagenExt(this.carta.prints_search_uri);
-    this.getSimboloMana(this.carta.mana_cost);
+    if(this.carta?.card_faces && this.carta?.card_faces.length > 0){
+      console.log("carta unica con doble habilidad")
+      this.getSimboloMana(this.carta.card_faces[0].mana_cost);
+    }else{
+      console.log("carta normal o doble cara")
+      this.getSimboloMana(this.carta?.mana_cost);
+    }
   }
 
   closeModal() {

@@ -1,6 +1,7 @@
 <!-- no se representan las cartas dobles -->
 @if (carta) {
     <ion-content class="ion-padding">
+        <!-- info de la carta -->
         <ion-card>
             <ion-button (click)="closeModal()" fill="clear">
                 <ion-icon name="close" src="assets/icon/arrow-left.svg"></ion-icon>
@@ -8,16 +9,24 @@
             @if(carta.image_uris){
             <img [alt]="carta.name" [src]="carta.image_uris.art_crop" />
             <ion-card-header>
-                <ion-card-title>
-                    {{carta?.name}}
+                <ion-card-title color="dark">
+                    @if(carta?.card_faces && carta?.card_faces.length > 0){
+                        {{carta?.card_faces[0].name}} 
+                    } @else {
+                        {{carta?.name}} 
+                    }
                     <span>
                         @for (simbolo of simbolosMana; track $index) {
                             <i [class]="'ms ms-' + simbolo + ' ms-cost'" style="margin-left: 0.1rem;"></i>
                         }
                     </span>
                 </ion-card-title>
-                <ion-card-subtitle>
-                    {{carta?.type_line}} 
+                <ion-card-subtitle color="dark">
+                    @if(carta?.card_faces && carta?.card_faces.length > 0){
+                        {{carta?.card_faces[0].type_line}}
+                    } @else {
+                        {{carta?.type_line}}
+                    }
                     <span class="poder-resis">
                         @if(carta.power && carta.toughness){
                             {{carta?.power}}/{{carta?.toughness}}
@@ -25,39 +34,42 @@
                     </span>
                 </ion-card-subtitle>
             </ion-card-header>
-            
-            <ion-card-content [innerHTML]="getSimbolosTexto(carta?.oracle_text)">
-            </ion-card-content>
+            @if(carta?.card_faces && carta?.card_faces.length > 0){
+                <ion-card-content [innerHTML]="getSimbolosTexto(carta?.card_faces[0].oracle_text)" color="dark"></ion-card-content>
+            }@else {
+                <ion-card-content [innerHTML]="getSimbolosTexto(carta?.oracle_text)" color="dark"></ion-card-content>
+            }
             } @else {
                 <img [alt]="carta.card_faces[0].name" [src]="carta.card_faces[0].image_uris.art_crop" />
                 <ion-card-header>
-                    <ion-card-title>
+                    <ion-card-title color="dark">
                         {{carta?.card_faces[0].name}} 
                         {{carta?.card_faces[0].mana_cost}}
                     </ion-card-title>
-                    <ion-card-subtitle>{{carta?.card_faces[0].type_line}}</ion-card-subtitle>
+                    <ion-card-subtitle color="dark">{{carta?.card_faces[0].type_line}}</ion-card-subtitle>
                 </ion-card-header>
                 
-                <ion-card-content>
+                <ion-card-content color="dark">
                     {{carta?.card_faces[0].oracle_text}}
                 </ion-card-content>
             }
         </ion-card>
+        <!-- Versiones de la misma carta -->
         @for (grupo of cartasImagenes; track $index) {
             <ion-card>
                 <ion-card-header>
                     <ion-card-title>{{grupo.set_name}} ({{grupo.cartas[0].set}})</ion-card-title>
                 </ion-card-header>
 
-                <ion-card-content>
-                    <ion-list>
+                <ion-card-content color="dark">
+                    <ion-list color="dark">
                         @for (item of grupo.cartas; track $index) {
                             @if(item.image_uris?.png){
                                 <ion-item>
                                     <ion-thumbnail slot="start" lines="none">
                                         <ion-img [src]="item.image_uris.png"></ion-img>
                                     </ion-thumbnail>
-                                    <ion-label>
+                                    <ion-label color="dark">
                                         {{getPrecio(item)}}
                                     </ion-label>
                                 </ion-item>
@@ -66,7 +78,7 @@
                                     <ion-thumbnail slot="start" lines="none">
                                         <ion-img [src]="item.card_faces[0].image_uris.png"></ion-img>
                                     </ion-thumbnail>
-                                    <ion-label>
+                                    <ion-label color="dark">
                                         {{getPrecio(item)}}
                                     </ion-label>
                                 </ion-item>

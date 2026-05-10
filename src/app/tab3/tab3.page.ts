@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonImg, IonText, ModalController } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonImg, IonText, ModalController, IonButton } from '@ionic/angular/standalone';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Api } from '../services/api';
 import { BusquedaAvanzadaModalComponent } from '../components/busqueda-avanzada-modal/busqueda-avanzada-modal.component';
@@ -9,7 +9,7 @@ import { BusquedaAvanzadaComponent } from '../components/busqueda-avanzada/busqu
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, ReactiveFormsModule, IonImg, IonText],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, ReactiveFormsModule, IonImg, IonText, IonButton],
 })
 export class Tab3Page {
   miFormulario: FormGroup;
